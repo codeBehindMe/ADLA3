@@ -72,3 +72,50 @@ Udf.Utilities.Prcomp <- function(Features,nComps = 2){
     }
     
 }
+
+
+Udf.Utilities.Jitter <- function(Dataframe,x,y,colBy=NULL){
+    ### Wrapper function for ggplot.jitterplot()
+    require(ggplot2)
+
+    dt_ <- Dataframe # Local Instance
+    plotObj_ <- ggplot(dt_,aes(as.factor(dt_[,x]),as.factor(dt_[,y]))) # Generate ggplot object.
+
+    if(!is.null(colBy)){ ## Assess the color scheme requirements. 
+        col_ <- colBy
+        ggtitle_ <- paste0("Jitter ",colBy," ",x," ~ ",y)
+        plotObj_ <- plotObj_ + geom_jitter(aes(col = as.factor(dt_[,col_]))) + xlab(x) + ylab(y) + ggtitle(ggtitle_) + scale_color_discrete(name = colBy)
+    } else {
+        col_ <- "black"
+        ggtitle_ <- paste0("Jitter ", x," ~ ", y)
+
+         plotObj_ <- plotObj_ + geom_jitter() + xlab(x) + ylab(y) + ggtitle(ggtitle_)
+    }
+    return(plotObj_)
+}
+
+
+Udf.Utilities.Comboplot <- function(Dataframe,FUN,...) {
+
+    # Generates objects from custom function calls on a dataframe columns.
+    require(ggplot2)
+
+    if(class(Dataframe) != "data.frame") stop (paste0("Don't know how to handle ",class(Dataframe)," type object!")) # Data frame validation.
+
+    names_ <- names(Dataframe) # Get the names 
+    combos_ <- combn(names,2) # Get all possible pairs combinations
+    plots_ <- list() # Instantiate a list object to carry the plots
+    for(i in 1:length(combos_)){
+
+
+
+
+    }
+
+
+
+
+
+
+
+}
