@@ -53,6 +53,8 @@ Udf.Utilities.Multiplot <- function(..., plotlist = NULL, file, cols = 1, layout
 
 Udf.Utilities.Prcomp <- function(Features,nComps = 2){
 
+    ## Wrapper function for principle component analysis.
+
     if(ncol(Features) < 2){
         stop("Too low features.")
     } else if (nComps > ncol(Features)){
@@ -142,6 +144,8 @@ Udf.Utilities.Scatter <- function(Dataframe,x,y,colBy=NULL){
 
 
 Udf.Utilities.DownSample <- function(Dataframe,target){
+
+    stop("Not Implemented.")
     # Returns down sampled dataframe.
     
     # Check dataframe
@@ -151,4 +155,31 @@ Udf.Utilities.DownSample <- function(Dataframe,target){
 
     fLev <- levels(as.factor(Dataframe[,target]))
 
+}
+
+
+
+Udf.Utilities.SplitLabel <- function(Dataframe,target){
+    # Wrapper for splitting labels and features.
+
+    # Remove label.
+    features_ <- Dataframe[,-which(names(Dataframe) %in% target)] 
+    # Get label
+    labels_ <- Dataframe[,target]
+    # Construct return object.
+    returnObject <- list(features=features_,labels=labels_) 
+
+    return(returnObject)
+}
+
+
+Udf.Utilities.ForceAssertFactor <- function(Vector){
+    # Some models may want the labels as a factor for some internal routing. This function is called to convert a vector into a factor.
+
+    factor_ <- as.factor(Vector)
+
+    if(length(levels(factor_)) > 4){
+        warn("Factor exceeds 4 levels.")
+    }
+    return(as.factor(Vector))
 }

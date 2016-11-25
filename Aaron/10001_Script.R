@@ -4,7 +4,7 @@ require(scales)
 require(caret)
 
 
-setwd("C:/Users/aaron/OneDrive/Documents/Monash Data Science/Applied Data Analysis/A3/Aaron")
+# setwd("C:/Users/aaron/OneDrive/Documents/Monash Data Science/Applied Data Analysis/A3/Aaron")
 source("../utilities.r")
 dt_ <- read.csv("../prostate.csv")
 
@@ -31,8 +31,13 @@ Udf.Utilities.Jitter(dt_, "ATT2", "ATT3", "Result")
 Udf.Utilities.Jitter(dt_, "ATT3", "ATT4", "Result")
 
 
+# Train test split
+dt_ <- dt_[,-1]
+trInd_ <- createDataPartition(dt_$Result,p = 0.8,list = FALSE, times =1 )
+dt_tr <- dt_[trInd_,]
+dt_ts <- dt_[-trInd_,]
 
-# Resampling inline.
+Udf.Utilities.Multiplot(ggplot(dt_tr,aes(as.factor(dt_tr$Result))) + geom_bar() + xlab("Result") + ggtitle("Training Set Target Distribution"),ggplot(dt_ts,aes(as.factor(dt_ts$Result))) + geom_bar() + xlab("Result") + ggtitle("Test Set Target Distribution"))
 
 self.adaBoostedTree <- function(Dataframe, target) {
 
@@ -48,14 +53,15 @@ self.adaBoostedTree <- function(Dataframe, target) {
     ctrl_ <- trainControl(method = "cv", number = 10, sampling = "down")
 
 
-    dt_[, target] <- as.factor(dt_[, target])
+    df_[, target] <- as.factor(df_[, target])
 
-    mdl_ <- train(target ~ . ,method = 'AdaBoost.M1')
+    mdl_ <- train(target ~ . ,data = df_, method = 'AdaBoost.M1')
 
-
-
-
+    return(mdl_)
 }
 
 
+dt_[,ncol(dt_)] <- as.factor(dt_[,ncol(dt_)])
+myBoostModel <- train(Result ~ . , data = dt_,method = "AdaBoost.M1")
 
+myBoostModel <- self.adaBoostedTree(dt_tr,"Result")
