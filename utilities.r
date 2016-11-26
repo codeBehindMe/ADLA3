@@ -164,6 +164,19 @@ Udf.Utilities.DownSample <- function(Dataframe,target){
 	
 }
 
+Udf.Utilities.UpSample <- function(Dataframe,target){
+
+    # Check dataframe
+    if(class(Dataframe) != "data.frame") stop(paste0("Don't know how to handle object of type ",class(Dataframe)))
+
+	set.seed(9560)
+	up_train <- upSample(x = Dataframe[, -ncol(Dataframe)],
+                         y = Dataframe$Result)
+	# rename to Result (not sure why this method changes the col name to Class)
+	names(up_train)[names(down_train) == 'Class'] <- 'Result'
+	return(up_train)
+	
+}
 
 
 Udf.Utilities.SplitLabel <- function(Dataframe,target){
