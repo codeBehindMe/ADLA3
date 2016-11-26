@@ -183,3 +183,30 @@ Udf.Utilities.ForceAssertFactor <- function(Vector){
     }
     return(as.factor(Vector))
 }
+
+# Returns a dataframe with the classfication metrics given lists of predicted values and actuals
+Udf.Utilities.ClassificationMetrics <- function(preds, actuals){
+
+	metrics_df = data.frame(matrix(ncol = 2, nrow = 10))
+	colnames(metrics_df) <- c('metric', 'value')
+
+	cm <- as.matrix(table(Actual = actual, Predicted = pred)) # create the confusion matrix
+	n <- sum(cm) # number of instances
+	nc <- nrow(cm) # number of classes
+	diag <- diag(cm) # number of correctly classified instances per class 
+	rowsums <- apply(cm, 1, sum) # number of instances per class
+	colsums <- apply(cm, 2, sum) # number of predictions per class
+	p <- rowsums / n # distribution of instances over the actual classes
+	q <- colsums / n # distribution of instances over the predicted classes
+	
+	accuracy <- sum(diag) / n 
+	expAccuracy = sum(p*q)
+	kappa <- (accuracy - expAccuracy) / (1 - expAccuracy)
+		
+	metrics_df[1,] <- c('Accuracy', accuracy)
+	metrics_df[2,] <- c('Kappa', kappa)
+		
+	return(metrics_df)
+	
+
+}
