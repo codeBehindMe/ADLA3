@@ -178,6 +178,36 @@ Udf.Utilities.UpSample <- function(Dataframe,target){
 	
 }
 
+Udf.Utilities.SmoteSample <- function(Dataframe){
+		
+    # Check dataframe
+    if(class(Dataframe) != "data.frame") stop(paste0("Don't know how to handle object of type ",class(Dataframe)))
+	
+	set.seed(9560)
+	smote_train <- SMOTE(Result ~ ., data = Dataframe)
+	
+	# rename to Result (not sure why this method changes the col name to Class)
+	names(smote_train)[names(smote_train) == 'Class'] <- 'Result'                      
+	
+	return(smote_train)
+
+}
+
+Udf.Utilities.RoseSample <- function(Dataframe){
+		
+    # Check dataframe
+    if(class(Dataframe) != "data.frame") stop(paste0("Don't know how to handle object of type ",class(Dataframe)))
+	
+	set.seed(9560)
+	rose_train <- ROSE(Result ~ ., data = Dataframe)$data
+	
+	# rename to Result (not sure why this method changes the col name to Class)
+	names(rose_train)[names(rose_train) == 'Class'] <- 'Result'                      
+	
+	return(rose_train)
+
+}
+
 
 Udf.Utilities.SplitLabel <- function(Dataframe,target){
     # Wrapper for splitting labels and features.
@@ -227,6 +257,6 @@ Udf.Utilities.ClassificationMetrics <- function(preds, actuals){
 	metrics_df[2,] <- c('Kappa', kappa)
 		
 	return(metrics_df)
-	
-
 }
+
+
