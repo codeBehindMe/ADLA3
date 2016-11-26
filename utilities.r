@@ -145,16 +145,23 @@ Udf.Utilities.Scatter <- function(Dataframe,x,y,colBy=NULL){
 
 Udf.Utilities.DownSample <- function(Dataframe,target){
 
-    stop("Not Implemented.")
+    #stop("Not Implemented.")
     # Returns down sampled dataframe.
     
     # Check dataframe
     if(class(Dataframe) != "data.frame") stop(paste0("Don't know how to handle object of type ",class(Dataframe)))
 
-    dt_ <- Dataframe 
+    #dt_ <- Dataframe 
 
-    fLev <- levels(as.factor(Dataframe[,target]))
+    #fLev <- levels(as.factor(Dataframe[,target]))
 
+	set.seed(9560)
+	down_train <- downSample(x = Dataframe[, -ncol(Dataframe)],
+                         y = Dataframe$Result)
+	# rename to Result (not sure why this method changes the col name to Class)
+	names(down_train)[names(down_train) == 'Class'] <- 'Result'
+	return(down_train)
+	
 }
 
 
