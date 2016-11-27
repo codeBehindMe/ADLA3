@@ -4,7 +4,7 @@ require(scales)
 require(caret)
 
 
-# setwd("C:/Users/aaron/OneDrive/Documents/Monash Data Science/Applied Data Analysis/A3/Aaron")
+setwd("C:/Users/aaron/OneDrive/Documents/Monash Data Science/Applied Data Analysis/A3/Aaron")
 source("../utilities.r")
 dt_ <- read.csv("../prostate.csv")
 
@@ -39,29 +39,63 @@ dt_ts <- dt_[-trInd_,]
 
 Udf.Utilities.Multiplot(ggplot(dt_tr,aes(as.factor(dt_tr$Result))) + geom_bar() + xlab("Result") + ggtitle("Training Set Target Distribution"),ggplot(dt_ts,aes(as.factor(dt_ts$Result))) + geom_bar() + xlab("Result") + ggtitle("Test Set Target Distribution"))
 
-self.adaBoostedTree <- function(Dataframe, target) {
+#self.adaBoostedTree <- function(Dataframe, target) {
 
-    warning("Application specific function call. May return incorrect values if used out of context.")
+    #warning("Application specific function call. May return incorrect values if used out of context.")
 
-    require(caret)
-    require(adabag)
-    require(plyr)
-
-
-    df_ <- Dataframe
-
-    ctrl_ <- trainControl(method = "cv", number = 10, sampling = "down")
+    #require(caret)
+    #require(adabag)
+    #require(plyr)
 
 
-    df_[, target] <- as.factor(df_[, target])
+    #df_ <- Dataframe
 
-    mdl_ <- train(target ~ . ,data = df_, method = 'AdaBoost.M1')
-
-    return(mdl_)
-}
+    #ctrl_ <- trainControl(method = "cv", number = 10, sampling = "down")
 
 
-dt_[,ncol(dt_)] <- as.factor(dt_[,ncol(dt_)])
-myBoostModel <- train(Result ~ . , data = dt_,method = "AdaBoost.M1")
+    #df_[, target] <- as.factor(df_[, target])
 
-myBoostModel <- self.adaBoostedTree(dt_tr,"Result")
+    #mdl_ <- train(target ~ . ,data = df_, method = 'AdaBoost.M1')
+
+    #return(mdl_)
+#}
+
+
+## Controller + Data Set
+ctrl_ <- trainControl(method = "cv", number = 10, sampling = "down")
+
+dt_tr[, ncol(dt_tr)] <- as.factor(dt_tr[, ncol(dt_tr)])
+
+
+## AdaBoost.M1
+
+# Tuning Parameters :
+# mfinal (number of trees)
+# maxdepth (max depth of tree)
+# coeflearn (coefficient type)
+
+
+tuneGrid_boost <- expand.grid(mfinal = )
+myBoostModel <- train(Result ~ . , data = dt_tr,method = "AdaBoost.M1",trainControl = ctrl_)
+
+
+## Multinomial Support Vector Machine w/ Radial Basis Function
+
+# Tuning Parameters : 
+# Cost
+# Sigma
+
+mySVMModel <- train(Result ~ ., data = dt_tr, method = "svmRadial", trainControl = ctrl_)
+
+
+## Nueral Network with Feature Extraction
+
+# Tuning parameters:
+# Size (Number of hidden units).
+# Decay (Weight decay).
+
+tuneGrid_NNFE <- expand.grid(size = seq(1,20,1), decay = seq(0.001,0.3,0.001))
+
+myNNFEModel <- train(Result ~ ., data = dt_tr, method = "pcaNNet", trainControl = ctrl_,tuneGrid = tuneGrid_NNFE)
+
+
