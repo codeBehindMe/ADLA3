@@ -173,7 +173,7 @@ Udf.Utilities.UpSample <- function(Dataframe,target){
 	up_train <- upSample(x = Dataframe[, -ncol(Dataframe)],
                          y = Dataframe$Result)
 	# rename to Result (not sure why this method changes the col name to Class)
-	names(up_train)[names(down_train) == 'Class'] <- 'Result'
+	names(up_train)[names(up_train) == 'Class'] <- 'Result'
 	return(up_train)
 	
 }
