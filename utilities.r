@@ -259,4 +259,24 @@ Udf.Utilities.ClassificationMetrics <- function(preds, actuals){
 	return(metrics_df)
 }
 
+Udf.Utilities.Mode <- function(x) {
+  ux <- unique(x)
+  ux[which.max(tabulate(match(x, ux)))]
+}
+
+Udf.Utilities.MajorityVotePredictions <- function(preds_df){
+    
+    pred_cols <- ncol(preds_df)
+           
+    # traverse the rows, add the mode to the new 'majority_pred' column
+    for (i in 1:nrow(preds_df)) {        
+        mode <- Udf.Utilities.Mode(preds_df[i, 1:pred_cols])
+        preds_df[i, 'majority_pred'] <- mode
+    }
+    
+    return(preds_df)
+    
+}
+
+
 
