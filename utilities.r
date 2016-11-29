@@ -280,9 +280,41 @@ Udf.Utilities.MajorityVotePredictions <- function(preds_df){
 
 
 
-Udf.Utilities.StackedBoostedMachine <- function(...){
+Udf.Utilities.MoveColToEnd <- function(Dataframe, Column){
 
-    
+    # Moves the specified column to end of dataframe.
+    df_ <- Dataframe
+    cn_ <- Column
 
+    tmpc_ <- subset(df_,select = cn_) 
+    tmpdf_ <- df_[,-which(names(df_) %in% c(cn_))]
+
+    final_ <- cbind(tmpdf_,tmpc_)
+
+    return(final_)
 }
 
+Udf.Utilities.PrepareTraining <- function(Dataframe){
+    # Exclusive wrapper for preparing training and test sets for the prostate cancer data set.
+    require(caret)
+
+    dt_ <- Dataframe # Copy local.
+
+    # Remove ID
+    dt_ <- dt_[,-1]
+
+    # Factorise Result
+    dt_[,"Result"] <- as.factor(dt_[,"Result"])
+
+    # Split 
+    trIndx_ <- createDataPartition(dt_[,"Result"], p = 0.8, list = FALSE, times = 1)
+
+    trSet_ <- dt_[trIndx_,]
+    tsSet_ <- dt_[-trIndx_,]
+
+
+    object = list(training = trSet_, testing = tsSet_)
+
+
+    return(object)
+}
