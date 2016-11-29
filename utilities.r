@@ -235,7 +235,7 @@ Udf.Utilities.ForceAssertFactor <- function(Vector){
 }
 
 # Returns a dataframe with the classfication metrics given lists of predicted values and actuals
-Udf.Utilities.ClassificationMetrics <- function(preds, actuals){
+Udf.Utilities.ClassificationMetrics <- function(pred, actual){
 
 	metrics_df = data.frame(matrix(ncol = 2, nrow = 10))
 	colnames(metrics_df) <- c('metric', 'value')
