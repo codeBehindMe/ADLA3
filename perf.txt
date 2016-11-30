@@ -1,0 +1,27 @@
+0.3823038 :: h2o.deeplearning(
+    x = 1:(ncol(h2_tr) - 1),
+    y = ncol(h2_tr),
+    training_frame = h2_tr,
+    validation_frame = h2_ts,
+    distribution = "multinomial",
+    activation = "Maxout",
+    hidden = c(200,300,200),
+    l1 = 1e-5,
+    epochs = 20,
+    nfolds = 5,
+    balance_classes = TRUE
+)
+
+0.3989983 :: h2o.deeplearning(
+    x = 1:(ncol(h2_tr) - 1),
+    y = ncol(h2_tr),
+    training_frame = h2_tr,
+    validation_frame = h2_ts,
+    distribution = "multinomial",
+    activation = "Maxout",
+    hidden = c(300,400,300),
+    l1 = 1e-5,
+    epochs = 20,
+    nfolds = 5,
+    balance_classes = TRUE
+)
