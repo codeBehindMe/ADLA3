@@ -25,17 +25,24 @@ cInf_ <- findLinearCombos(dt_[,- c(1,ncol(dt_))])
 training <- Udf.Utilities.PrepareTraining(dt_)$training
 testing <- Udf.Utilities.PrepareTraining(dt_)$testing
 
-preProcessVal <- preProcess(training,method = c("center","scale"))
+preProcessVal <- preProcess(training,method = c("center","scale","YeoJohnson"))
 
 trXformed <- predict(preProcessVal,training)
 tsXformed <- predict(preProcessVal,testing)
 
+xfrmtr <- as.data.frame(spatialSign(trXformed[,-ncol(trXformed)]))
 
+plot_ly(x = xfrmtr$ATT1,y = xfrmtr$ATT2,z = xfrmtr$ATT3,mode='markers', color = trXformed$Result, type = "scatter3d")
 ## PCA
 pcaObj_ <- Udf.Utilities.Prcomp(trXformed[,-ncol(trXformed)],nComps = 2)
 pcaRot_ <- pcaObj_$prcompObj$rotation # Rotation
 
 pca2C_ <- pcaObj_$components # components for plot.
+
+xfr_ <- Udf.Utilities.Prcomp(xfrmtr[,-ncol(xfrmtr)],nComps = 2)
+xfr_ <- xfr_$components
+ggplot(pca2C_,aes(xfr_$PC1,xfr_$PC2,color = trXformed$Result)) + geom_point()
+plot_ly(x = xfr_$PC1, y =xfr_$PC2, color = trXformed$Result, mode = 'markers' )
 
 ggplot(pca2C_,aes(pca2C_$PC1,pca2C_$PC2,color = trXformed$Result)) + geom_point() # plot.
 

@@ -40,7 +40,7 @@ dl_ <- h2o.deeplearning(
 
 prd_ <- h2o.predict(dl_,h2_ts)
 prd_ <- as.data.frame(prd_)
-sum(prd_$predict == ts_$Result)/599
+sum(as.numeric(prd_$predict) == as.numeric(feed.testing$Result))/599
 
 h2o.performance(dl_,valid = TRUE)
 ## 68%
@@ -53,6 +53,7 @@ hidden_opt <- list(c(40,50,40),c(50,60,50),c(100,150,100))
 l1_opt <- c(1e-5,1e-7)
 hyper_params <- list(hidden = hidden_opt,l1 = l1_opt)
 
+stop()
 dl_grid <- h2o.grid(
     "deeplearning",
     hyper_params = hyper_params,
