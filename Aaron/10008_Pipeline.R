@@ -173,12 +173,16 @@ NN.Autoencoder <- h2o.deeplearning(
     export_weights_and_biases = TRUE
 )
 
+h2o.saveModel(NN.Autoencoder,"AE")
+
+NN.Autoencoder <- h2o.loadModel("C:\\Users\\tillera\\Documents\\ADLA3\\Aaron\\AE\\DeepLearning_model_R_1480634772219_1")
+
 tr_sup_ft <- h2o.deepfeatures(NN.Autoencoder,h2_tr,layer = 5)
 pltData <- as.data.frame(tr_sup_ft)
 
 
 ggplot(pltData,aes(pltData$DF.L5.C1,pltData$DF.L5.C2,color=feed.training$Result)) + geom_point()
-plot_ly(x=pltData$DF.L3.C1,y=pltData$DF.L3.C2,z=pltData$DF.L3.C3, color = as.factor(feed.training$Result), mode = 'markers',type = "scatter3d",scale = 0.1)
+plot_ly(x=pltData$DF.L5.C1,y=pltData$DF.L5.C2, color = as.factor(feed.training$Result), mode = 'markers',scale = 0.1)
 
 
 ## Some models.
@@ -254,6 +258,7 @@ dl_3 <- h2o.deeplearning(
     variable_importances = TRUE
 )
 
+dl_3 <- h2o.loadModel("C:\\Users\\tillera\\Documents\\ADLA3\\Aaron\\mdl3\\DeepLearning_model_R_1480549397405_4")
 
 # 0.39
 prd_3 <- h2o.predict(dl_3,h2_ts)
@@ -344,7 +349,9 @@ feed.testing.deep[,"Result"] <- as.factor(feed.testing.deep[,"Result"])
 h2_tr <- as.h2o(feed.training.deep,"h2_tr")
 h2_ts <- as.h2o(feed.testing.deep,"h2_ts")
 
-dl_5 <- h2o.deeplearning(
+dl_5 <- h2o.loadModel("C:\\Users\\tillera\\Documents\\ADLA3\\Aaron\\mdl5\\DeepLearning_model_R_1480549397405_8")
+
+dl_5 <- h2o.deeplearning( #0.369
     x = 1:(ncol(h2_tr) - 1),
     y = ncol(h2_tr),
     training_frame = h2_tr,
@@ -367,3 +374,90 @@ prd_5 <- as.data.frame(prd_5)
 sum(as.numeric(prd_5$predict) == as.numeric(feed.testing.deep$Result))/599
 
 h2o.saveModel(dl_5, "mdl5")
+
+
+
+dl_6 <- h2o.deeplearning( # 38.9
+    x = 1:(ncol(h2_tr) - 1),
+    y = ncol(h2_tr),
+    training_frame = h2_tr,
+    validation_frame = h2_ts,
+    distribution = "multinomial",
+    activation = "MaxoutWithDropout",
+    hidden = c(400,500,400),
+    l2 = 1e-5,
+    epochs = 20,
+    nfolds = 10,
+    balance_classes = TRUE,
+    input_dropout_ratio = 0.1,
+    loss = "CrossEntropy",
+    classification_stop = 0.45,
+    variable_importances = TRUE
+)
+
+
+
+prd_6 <- h2o.predict(dl_6,h2_ts)
+prd_6 <- as.data.frame(prd_6)
+sum(as.numeric(prd_6$predict) == as.numeric(feed.testing.deep$Result))/599
+
+
+h2o.saveModel(dl_6,"mdl6")
+
+
+dl_7 <- h2o.deeplearning( # 39.2%
+    x = 1:(ncol(h2_tr) - 1),
+    y = ncol(h2_tr),
+    training_frame = h2_tr,
+    validation_frame = h2_ts,
+    distribution = "multinomial",
+    activation = "MaxoutWithDropout",
+    hidden = c(400,500,400),
+    l2 = 1e-4,
+    epochs = 20,
+    nfolds = 10,
+    balance_classes = TRUE,
+    input_dropout_ratio = 0.1,
+    loss = "CrossEntropy",
+    classification_stop = 0.45,
+    variable_importances = TRUE
+)
+
+
+prd_7 <- h2o.predict(dl_7,h2_ts)
+prd_7 <- as.data.frame(prd_7)
+sum(as.numeric(prd_7$predict) == as.numeric(feed.testing.deep$Result))/599
+
+
+h2o.saveModel(dl_7,"mdl7")
+
+
+
+
+
+dl_8 <- h2o.deeplearning( # 36.4%
+    x = 1:(ncol(h2_tr) - 1),
+    y = ncol(h2_tr),
+    training_frame = h2_tr,
+    validation_frame = h2_ts,
+    distribution = "multinomial",
+    activation = "MaxoutWithDropout",
+    hidden = c(400,500,400),
+    l2 = 1e-3,
+    epochs = 20,
+    nfolds = 10,
+    balance_classes = TRUE,
+    input_dropout_ratio = 0.1,
+    loss = "CrossEntropy",
+    classification_stop = 0.45,
+    variable_importances = TRUE
+)
+
+
+prd_8 <- h2o.predict(dl_8,h2_ts)
+prd_8 <- as.data.frame(prd_8)
+sum(as.numeric(prd_8$predict) == as.numeric(feed.testing.deep$Result))/599
+
+
+h2o.saveModel(dl_8,"mdl8")
+
