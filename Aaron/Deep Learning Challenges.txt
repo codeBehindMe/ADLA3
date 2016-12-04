@@ -1,0 +1,14 @@
+### Feed Forward Deep Learning Model Challenges
+There were a number of challenges developing the deep learning model. Firstly, the computational requirements of the deep learning models are quite high at training time. The training system was a now outdated Intel Core i5 with 8GB of memory. This meant that there was no option to do single thread operations due to the large number of neurons in the hidden layer. The only option was to utilise h2o library which provided a multi threaded solution via the Java traintime environment. <br />
+Even with multi threading, grid searching for hyper parameters was extremely difficult. Much of the time the grid model would error out due to memory constraints and or computational errors propergating out to the operating system (these include java runtime exceptions, and IDE C++ runtime exceptions). <br />
+Secondly, the tuning of hyper parameters is extremely difficult (at least given the current time constraints). Hyperparameters that were tuned are : <br />
+1. Nueron activation function type.
+2. Number of hidden layers and neurons in each layer.
+3. Regularisation method and strength.
+4. Number of passes.
+5. Number of folds in cross validation.
+6. Feature drop out in pass.
+There are a host of other parameters which could be tuned to achive better performance however given the time constraints, were not investigated. <br />
+As to expected, the model accuracy was very sensitive to the Nueron activation function and the hidden layers and neurons in the layers. The number of folds and the regularisation strength also played a crucial part in model accuracy control.<br />
+One of the more interesting situations we're the auto encoder output which represented a unique challenge. Due to the multi threaded design of the model, the autoencoder seed was not able to be set. Which meant the output of the autoencoder was changing every new instance it was run. So there were instances that the autoencoder output was very favourable to the network model and increase in validation set accuracy of upto 41% was achieved. However, when the transform was not favourable, the precision fell back down to as low as 30%. <br />
+To counter this affect the weights were extracted and used to transform the data the same way everytime. However, once this was identified, it represented not enough time to reparameterise the network to optimal.
